@@ -57,7 +57,10 @@ exports.postCrearProducto = (req, res, next) => {
     })
     .catch(err => {
       //console.log(err);
-      res.redirect('/500');
+      //res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -67,6 +70,7 @@ exports.getEditarProducto = (req, res, next) => {
     return res.redirect('/');
   }
   const idProducto = req.params.idProducto;
+  throw new Error('Error de prueba');
   Producto.findById(idProducto)
     .then(producto => {
       if (!producto) {
@@ -82,7 +86,11 @@ exports.getEditarProducto = (req, res, next) => {
         erroresValidacion: [],
       });
     })
-  .catch(err => console.log(err));
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  });
 };
 
 
