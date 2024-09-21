@@ -99,8 +99,12 @@ exports.postIngresar = (req, res, next) => {
           res.redirect('/ingresar');
         });
     })
-    .catch(err => console.log(err));
-};
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+  };
 
 exports.getRegistrarse = (req, res, next) => {
   let mensaje = req.flash('error');
@@ -161,7 +165,9 @@ exports.postRegistrarse = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err)
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -218,7 +224,9 @@ exports.postReinicio = (req, res, next) => {
         });
       })
       .catch(err => {
-        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
       });
   });
 };
@@ -242,7 +250,9 @@ exports.getNuevoPassword = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -271,6 +281,8 @@ exports.postNuevoPassword = (req, res, next) => {
       res.redirect('/ingresar');
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };

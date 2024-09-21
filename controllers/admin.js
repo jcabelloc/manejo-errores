@@ -23,7 +23,7 @@ exports.postCrearProducto = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors.array());
+    // console.log(errors.array());
     return res.status(422).render('admin/editar-producto', {
       titulo: 'Crear Product',
       path: '/admin/crear-producto',
@@ -41,7 +41,7 @@ exports.postCrearProducto = (req, res, next) => {
   }
 
   const producto = new Producto({
-    _id: new mongoose.Types.ObjectId('66e8eacce0e1b3b7ebf2bed0'),
+    //_id: new mongoose.Types.ObjectId('66e8eacce0e1b3b7ebf2bed0'),
     nombre: nombre,
     precio: precio,
     descripcion: descripcion,
@@ -70,7 +70,7 @@ exports.getEditarProducto = (req, res, next) => {
     return res.redirect('/');
   }
   const idProducto = req.params.idProducto;
-  throw new Error('Error de prueba');
+  // throw new Error('Error de prueba');
   Producto.findById(idProducto)
     .then(producto => {
       if (!producto) {
@@ -137,7 +137,11 @@ exports.postEditarProducto = (req, res, next) => {
       console.log('PRODUCTO GUARDADO!');
       res.redirect('/admin/productos');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }; 
 
 exports.getProductos = (req, res, next) => {
@@ -153,8 +157,12 @@ exports.getProductos = (req, res, next) => {
         path: '/admin/productos',
       });
     })
-    .catch(err => console.log(err));
-    };
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+  };
 
 
 exports.postEliminarProducto = (req, res, next) => {
@@ -164,5 +172,9 @@ exports.postEliminarProducto = (req, res, next) => {
       console.log('PRODUCTO ELIMINADO');
       res.redirect('/admin/productos');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }; 
