@@ -40,13 +40,21 @@ app.use(session({ secret: 'algo muy secreto', resave: false, saveUninitialized: 
 
 app.use(csrfProtection);
 
+app.use((req, res, next) => {
+  res.locals.autenticado = req.session.autenticado;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 
 app.use((req, res, next) => {
+  //throw new Error('Error de Prueba');
   if (!req.session.usuario) {
     return next();
   }
   Usuario.findById(req.session.usuario._id)
     .then(usuario => {
+      //throw new Error('Error de Prueba');
       if (!usuario) {
         return next();
       }
@@ -54,14 +62,9 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => {
-      throw new Error(err);
+      // throw new Error(err);
+      next(new Error(err));
     });
-});
-
-app.use((req, res, next) => {
-  res.locals.autenticado = req.session.autenticado;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 
@@ -74,7 +77,12 @@ app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
   // res.status(error.httpStatusCode).render(...);
-  res.redirect('/500');
+  // res.redirect('/500');
+  res.status(500).render('500', {
+    titulo: 'Error!',
+    path: '/500',
+    autenticado: req.session.autenticado
+  });
 });
 
 mongoose
