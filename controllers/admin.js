@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const { validationResult } = require('express-validator');
 
 const Producto = require('../models/producto');
@@ -24,7 +26,7 @@ exports.postCrearProducto = (req, res, next) => {
     console.log(errors.array());
     return res.status(422).render('admin/editar-producto', {
       titulo: 'Crear Product',
-      path: '/admin/editar-product',
+      path: '/admin/crear-producto',
       modoEdicion: false,
       tieneError: true,
       mensajeError: errors.array()[0].msg,
@@ -38,7 +40,13 @@ exports.postCrearProducto = (req, res, next) => {
     });
   }
 
-  const producto = new Producto({nombre: nombre, precio: precio, descripcion: descripcion, urlImagen: urlImagen, idUsuario: req.usuario._id
+  const producto = new Producto({
+    _id: new mongoose.Types.ObjectId('66e8eacce0e1b3b7ebf2bed0'),
+    nombre: nombre,
+    precio: precio,
+    descripcion: descripcion,
+    urlImagen: urlImagen,
+    idUsuario: req.usuario._id
   });
   producto
     .save()
@@ -48,7 +56,8 @@ exports.postCrearProducto = (req, res, next) => {
       res.redirect('/admin/productos');
     })
     .catch(err => {
-      console.log(err);
+      //console.log(err);
+      res.redirect('/500');
     });
 };
 
